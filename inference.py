@@ -23,6 +23,7 @@ import hunters
 from util import manhattanDistance, raiseNotDefined
 from factorOperations import joinFactorsByVariableWithCallTracking, joinFactors
 from factorOperations import eliminateWithCallTracking
+import math
 
 ########### ########### ###########
 ########### QUESTION 1  ###########
@@ -61,7 +62,23 @@ def constructBayesNet(gameState: hunters.GameState):
     variableDomainsDict = {}
 
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    variables = [PAC, GHOST0, GHOST1, OBS0, OBS1]
+    edges =[(GHOST0, OBS0), (PAC, OBS0), (PAC, OBS1), (GHOST1, OBS1)]
+
+    allPossiblePositions = []
+    for x in range(X_RANGE): # +1 ?
+        for y in range(Y_RANGE):
+            allPossiblePositions.append((x,y))
+
+
+    allPossibleObservedDistances = range(0, MAX_NOISE + X_RANGE + Y_RANGE - 1)
+
+    variableDomainsDict[PAC] = allPossiblePositions
+    variableDomainsDict[GHOST0] = allPossiblePositions
+    variableDomainsDict[GHOST1] = allPossiblePositions
+    variableDomainsDict[OBS0] = allPossibleObservedDistances
+    variableDomainsDict[OBS1] = allPossibleObservedDistances
+
     "*** END YOUR CODE HERE ***"
 
     net = bn.constructEmptyBayesNet(variables, edges, variableDomainsDict)
