@@ -88,7 +88,9 @@ def joinFactors(factors: List[Factor]):
     Factor.variableDomainsDict
     """
 
+    #(self, inputUnconditionedVariables, inputConditionedVariables, inputVariableDomainsDict):
     # typecheck portion
+
     setsOfUnconditioned = [set(factor.unconditionedVariables()) for factor in factors]
     if len(factors) > 1:
         intersect = functools.reduce(lambda x, y: x & y, setsOfUnconditioned)
@@ -102,7 +104,59 @@ def joinFactors(factors: List[Factor]):
 
 
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    #(self, inputUnconditionedVariables, inputConditionedVariables, inputVariableDomainsDict)
+
+    inputUnconditionedVariables = set({})
+    inputConditionedVariables = set({})
+    inputVariableDomainsDict = {}
+
+    print("inputfactors", factors)
+    for factor in factors:
+        #print("getAllPossibleAssignmentDicts", factor.getAllPossibleAssignmentDicts()) #lists every possible variable combination
+        #print("variableDomainsDict", factor.variableDomainsDict()) #lists all options for all variables
+
+        #add unconditioned variables unconditioned set
+        #if they appear in conditioned set, remove it
+        for variable in factor.unconditionedVariables():
+            inputUnconditionedVariables.add(variable)
+            if variable in inputConditionedVariables:
+                inputConditionedVariables.remove(variable)
+
+        #if the conditioned variable does not already exist in the unconditional list, add it to the unconditional set
+        for variable in factor.conditionedVariables():
+            if variable not in inputUnconditionedVariables:
+                inputUnconditionedVariables.add(variable)
+
+
+        listOfAssignmentDict = factor.variableDomainsDict()
+        key_list = list(listOfAssignmentDict.keys())
+        val_list = list(listOfAssignmentDict.values())
+
+        for i in range(len(key_list)):
+            inputVariableDomainsDict[key_list[i]] = val_list[i]
+
+
+    inputUnconditionedVariables = list(inputUnconditionedVariables)
+    inputConditionedVariables = list(inputConditionedVariables)
+
+    answer = Factor(inputUnconditionedVariables, inputConditionedVariables, inputVariableDomainsDict)
+
+    print("answerfactor independent", answer.unconditionedVariables())
+    print("answer factor dependent", answer.conditionedVariables())
+    # Now we need to create a "all p
+    #where the next step (matching products ect.
+
+    ourAllPossibleCombinations = answer.getAllPossibleAssignmentDicts()
+
+    for i in range(len(ourAllPossibleCombinations)):
+        dict = ourAllPossibleCombinations[i]
+        prob = 1
+        for factor in factors:
+            prob = prob * factor.getProbability(dict)
+        answer.setProbability(dict, prob)
+
+
+    return answer
     "*** END YOUR CODE HERE ***"
 
 ########### ########### ###########
