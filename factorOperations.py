@@ -214,49 +214,23 @@ def eliminateWithCallTracking(callTrackingList=None):
         #In order to do that, I need to make a factor
 
         answer = Factor(unconditionedVariables, conditionalVariables, factor.variableDomainsDict())
-        print("original!", factor)
-        print("eliminate!", eliminationVariable)
-        print("answer!", answer)
+        allPossibleAssignmentDicts = answer.getAllPossibleAssignmentDicts()
 
-        allPossibleAssignmentDicts = factor.getAllPossibleAssignmentDicts()
-
-        #mess around
-        keys = list(factor.variableDomainsDict().keys())
-        values = list(factor.variableDomainsDict().values())
-        realDictionary = {}
-        for i in range(len(keys)):
-            if keys[i] != eliminationVariable:
-                realDictionary[keys[i]] = values[i]
-
-
-        #Now I need to assign each one of these with the correct percentage which will be the old one but with both versions
-        print("domain dict", factor.variableDomainsDict())
         for answerPossibility in allPossibleAssignmentDicts:
-            #this will be a dictionary
-            print("answer possibility", answerPossibility)
             probability = 0
             key_list = list(answerPossibility.keys())
-            num = 0
-            print("START")
             for originalPossibility in factor.getAllPossibleAssignmentDicts():
-                print("answr poss", answerPossibility)
-                print("original possibility", originalPossibility)
                 #this will be a dictionary
                 allMatched = True
                 for key in key_list:
                     if answerPossibility[key] != originalPossibility[key]:
                         allMatched = False
-                        print("false")
                         break
 
                 if allMatched:
-                    print("true")
                     probability += factor.getProbability(originalPossibility)
-                    num += 1
 
-                print("num", num)
             answer.setProbability(answerPossibility, probability)
-            print("END")
         return answer
         "*** END YOUR CODE HERE ***"
 
