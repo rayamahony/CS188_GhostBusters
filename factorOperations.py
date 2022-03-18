@@ -105,24 +105,21 @@ def joinFactors(factors: List[Factor]):
 
     "*** YOUR CODE HERE ***"
     #(self, inputUnconditionedVariables, inputConditionedVariables, inputVariableDomainsDict)
+    #print("getAllPossibleAssignmentDicts", factor.getAllPossibleAssignmentDicts()) #lists every possible variable combination
+    #print("variableDomainsDict", factor.variableDomainsDict()) #lists all options for all variables
 
     inputUnconditionedVariables = set({})
     inputConditionedVariables = set({})
     inputVariableDomainsDict = {}
 
-    print("inputfactors", factors)
+
     for factor in factors:
         #print("getAllPossibleAssignmentDicts", factor.getAllPossibleAssignmentDicts()) #lists every possible variable combination
-        #print("variableDomainsDict", factor.variableDomainsDict()) #lists all options for all variables
-
-        #add unconditioned variables unconditioned set
-        #if they appear in conditioned set, remove it
         for variable in factor.unconditionedVariables():
             inputUnconditionedVariables.add(variable)
             if variable in inputConditionedVariables:
                 inputConditionedVariables.remove(variable)
 
-        #if the conditioned variable does not already exist in the unconditional list, add it to the unconditional set
         for variable in factor.conditionedVariables():
             if variable not in inputUnconditionedVariables:
                 inputConditionedVariables.add(variable)
@@ -141,11 +138,6 @@ def joinFactors(factors: List[Factor]):
 
     answer = Factor(inputUnconditionedVariables, inputConditionedVariables, inputVariableDomainsDict)
 
-    print("answerfactor independent", answer.unconditionedVariables())
-    print("answer factor dependent", answer.conditionedVariables())
-    # Now we need to create a "all p
-    #where the next step (matching products ect.
-
     ourAllPossibleCombinations = answer.getAllPossibleAssignmentDicts()
 
     for i in range(len(ourAllPossibleCombinations)):
@@ -154,7 +146,6 @@ def joinFactors(factors: List[Factor]):
         for factor in factors:
             prob = prob * factor.getProbability(dict)
         answer.setProbability(dict, prob)
-
 
     return answer
     "*** END YOUR CODE HERE ***"
@@ -207,7 +198,66 @@ def eliminateWithCallTracking(callTrackingList=None):
                     "unconditionedVariables: " + str(factor.unconditionedVariables()))
 
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        unconditionedVariables = []
+        conditionalVariables = []
+
+        for variable in factor.unconditionedVariables():
+            if variable != eliminationVariable: #hopefully variable has type string
+                unconditionedVariables.append(variable)
+        for variable in factor.conditionedVariables():
+            if variable != eliminationVariable:
+                conditionalVariables.append(variable)
+
+
+        #Now I should have a list of my conditioned and my unconditioned variables
+        #Now I need to get every combination of the remaining variables.... this becomes my getAllPossibleAssignmentDicts
+        #In order to do that, I need to make a factor
+
+        answer = Factor(unconditionedVariables, conditionalVariables, factor.variableDomainsDict())
+        print("original!", factor)
+        print("eliminate!", eliminationVariable)
+        print("answer!", answer)
+
+        allPossibleAssignmentDicts = factor.getAllPossibleAssignmentDicts()
+
+        #mess around
+        keys = list(factor.variableDomainsDict().keys())
+        values = list(factor.variableDomainsDict().values())
+        realDictionary = {}
+        for i in range(len(keys)):
+            if keys[i] != eliminationVariable:
+                realDictionary[keys[i]] = values[i]
+
+
+        #Now I need to assign each one of these with the correct percentage which will be the old one but with both versions
+        print("domain dict", factor.variableDomainsDict())
+        for answerPossibility in allPossibleAssignmentDicts:
+            #this will be a dictionary
+            print("answer possibility", answerPossibility)
+            probability = 0
+            key_list = list(answerPossibility.keys())
+            num = 0
+            print("START")
+            for originalPossibility in factor.getAllPossibleAssignmentDicts():
+                print("answr poss", answerPossibility)
+                print("original possibility", originalPossibility)
+                #this will be a dictionary
+                allMatched = True
+                for key in key_list:
+                    if answerPossibility[key] != originalPossibility[key]:
+                        allMatched = False
+                        print("false")
+                        break
+
+                if allMatched:
+                    print("true")
+                    probability += factor.getProbability(originalPossibility)
+                    num += 1
+
+                print("num", num)
+            answer.setProbability(answerPossibility, probability)
+            print("END")
+        return answer
         "*** END YOUR CODE HERE ***"
 
     return eliminate
