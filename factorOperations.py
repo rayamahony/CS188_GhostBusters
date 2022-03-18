@@ -125,7 +125,7 @@ def joinFactors(factors: List[Factor]):
         #if the conditioned variable does not already exist in the unconditional list, add it to the unconditional set
         for variable in factor.conditionedVariables():
             if variable not in inputUnconditionedVariables:
-                inputUnconditionedVariables.add(variable)
+                inputConditionedVariables.add(variable)
 
 
         listOfAssignmentDict = factor.variableDomainsDict()
