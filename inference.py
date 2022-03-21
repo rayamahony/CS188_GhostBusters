@@ -19,6 +19,7 @@ import busters
 import game
 import bayesNet as bn
 from bayesNet import normalize
+from bayesNet import Factor #maybe this is wrong bc it wasnt already imported
 import hunters
 from util import manhattanDistance, raiseNotDefined
 from factorOperations import joinFactorsByVariableWithCallTracking, joinFactors
@@ -199,7 +200,32 @@ def inferenceByVariableEliminationWithCallTracking(callTrackingList=None):
             eliminationOrder = sorted(list(eliminationVariables))
 
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        #returns a factor where the unconditional variables are the query variables and the unconditional variables are the evidence variables
+
+
+        listOfFactors = bayesNet.getAllCPTsWithEvidence(evidenceDict) #this is a list of factors...
+
+        for eliminationVariable in eliminationOrder:
+
+            #need to join variables in listofStartingFactors that contain elimination variable and the remove those variables
+            currentFactorsNotToJoin, joinedFactor = joinFactorsByVariable(listOfFactors, eliminationVariable)
+            #now ive joined the factors, time to remove variable
+            #first check if it only has one unconditioned variable
+
+            if len(joinedFactor.unconditionedVariables()) != 1:
+                #print("len != 1")
+                removedVariableFactor = eliminate(joinedFactor, eliminationVariable)
+                #now update list of factors
+                listOfFactors = currentFactorsNotToJoin
+                listOfFactors.append(removedVariableFactor)
+            else:
+                ("len = 1 ")
+                listOfFactors = currentFactorsNotToJoin
+
+        #prolly need to normalize it...
+        answerFactor = joinFactors(listOfFactors)
+
+        return normalize(answerFactor)
         "*** END YOUR CODE HERE ***"
 
 
