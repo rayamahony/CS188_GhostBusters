@@ -366,7 +366,12 @@ class DiscreteDistribution(dict):
         {}
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        if len(self.items()) > 0 and self.total() > 0: #might be able to not need the first statement
+            total = self.total()
+            keys = list(self.keys())
+            items = list(self.values())
+            for i in range(len(keys)):
+                self[keys[i]] = items[i]/total
         "*** END YOUR CODE HERE ***"
 
     def sample(self):
@@ -391,7 +396,7 @@ class DiscreteDistribution(dict):
         0.0
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        return random.choices(list(self.keys()), list(self.values()))
         "*** END YOUR CODE HERE ***"
 
 
