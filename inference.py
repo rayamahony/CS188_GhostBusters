@@ -471,7 +471,19 @@ class InferenceModule:
         Return the probability P(noisyDistance | pacmanPosition, ghostPosition).
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        if ghostPosition is jailPosition:
+                if noisyDistance is None:
+                    return 1
+                else:
+                    return 0
+
+        if ghostPosition is not jailPosition:
+            if noisyDistance is None:
+                return 0
+
+        trueDistance = manhattanDistance(pacmanPosition, ghostPosition)
+        return busters.getObservationProbability(noisyDistance, trueDistance)
         "*** END YOUR CODE HERE ***"
 
     def setGhostPosition(self, gameState, ghostPosition, index):
@@ -533,7 +545,8 @@ class InferenceModule:
         """
         Update beliefs based on the given distance observation and gameState.
         """
-        raise NotImplementedError
+
+        
 
     def elapseTime(self, gameState):
         """
