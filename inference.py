@@ -546,7 +546,7 @@ class InferenceModule:
         Update beliefs based on the given distance observation and gameState.
         """
 
-        
+        raise NotImplementedError
 
     def elapseTime(self, gameState):
         """
@@ -597,8 +597,21 @@ class ExactInference(InferenceModule):
         position is known.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        #this is the right place raya
+
+        #print("beliefs", self.beliefs) #list of locations are probabilites
+        #print("type of beliefs", type(self.beliefs))
+        #print("posiitons", self.allPositions)
+        #print("type of self.allposirions", type(self.allPositions))
+        answerDict = {}
+
+        for i in range(len(self.allPositions)-1):
+            newBelief = self.beliefs.__getitem__(self.allPositions[i]) * self.getObservationProb(observation, gameState.getPacmanPosition(), self.allPositions[i], self.getJailPosition())
+            answerDict[self.allPositions[i]] = newBelief
+
+
         "*** END YOUR CODE HERE ***"
+        self.beliefs = DiscreteDistribution(answerDict)
         self.beliefs.normalize()
     
     ########### ########### ###########
