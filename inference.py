@@ -605,7 +605,7 @@ class ExactInference(InferenceModule):
         #print("type of self.allposirions", type(self.allPositions))
         answerDict = {}
 
-        for i in range(len(self.allPositions)-1):
+        for i in range(len(self.allPositions)):
             newBelief = self.beliefs.__getitem__(self.allPositions[i]) * self.getObservationProb(observation, gameState.getPacmanPosition(), self.allPositions[i], self.getJailPosition())
             answerDict[self.allPositions[i]] = newBelief
 
@@ -628,7 +628,27 @@ class ExactInference(InferenceModule):
         current position is known.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        answerDic = {}
+
+        #Creating dictionary of NewPositionDistributions to cut down on run time
+        #keys are old position
+        #values are new distribution given that old position
+        newPositionDistributionDictionary = {}
+        for position in self.allPositions:
+            newPositionDistributionDictionary[position] = self.getPositionDistribution(gameState, position)
+
+
+        for newPos in self.allPositions:
+            newBelief = 0
+            for oldPos in self.allPositions:
+                newPosDist = newPositionDistributionDictionary[oldPos]
+                newBelief += newPosDist.__getitem__(newPos) * self.beliefs.__getitem__(oldPos)
+
+            answerDic[newPos] = newBelief
+
+        self.beliefs = DiscreteDistribution(answerDic)
+        self.beliefs.normalize()
+
         "*** END YOUR CODE HERE ***"
 
     def getBeliefDistribution(self):
