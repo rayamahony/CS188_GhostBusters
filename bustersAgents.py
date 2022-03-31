@@ -19,6 +19,8 @@ from game import Directions
 from keyboardAgents import KeyboardAgent
 import inference
 import busters
+import math as MATH
+
 
 class NullGraphics:
     "Placeholder for graphics"
@@ -149,5 +151,41 @@ class GreedyBustersAgent(BustersAgent):
             [beliefs for i, beliefs in enumerate(self.ghostBeliefs)
              if livingGhosts[i+1]]
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+                #print("i", i)
+                #print("beliefs", beliefs)
+
+        #print("livingGhost", livingGhostPositionDistributions)
+        #raya here!
+
+        #Your agent should first find the most likely position of each remaining uncaptured ghost
+
+        closestGhostPosition = (0,0) #might not update
+        closestGhostDistance = MATH.inf
+
+        #print("livingGhostdistribtuin", type(livingGhostPositionDistributions))
+
+        for ghostDistribution in livingGhostPositionDistributions:
+            highestKey = ghostDistribution.argMax()
+            distance = self.distancer.getDistance(highestKey, pacmanPosition)
+            if distance < closestGhostDistance:
+                closestGhostDistance = distance
+                closestGhostPosition = highestKey
+
+
+        # then choose an action that minimizes the maze distance to the closest ghost.
+
+        bestAction = None
+        bestDistance = MATH.inf
+
+        for action in gameState.getLegalPacmanActions():
+            successorPosition = Actions.getSuccessor(pacmanPosition, action)
+            distance = self.distancer.getDistance(successorPosition, closestGhostPosition)
+            if distance < bestDistance:
+                bestDistance = distance
+                bestAction = action
+
+
+        return bestAction
+
+
         "*** END YOUR CODE HERE ***"

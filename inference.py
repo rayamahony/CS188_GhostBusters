@@ -472,13 +472,13 @@ class InferenceModule:
         """
         "*** YOUR CODE HERE ***"
 
-        if ghostPosition is jailPosition:
+        if ghostPosition == jailPosition:
                 if noisyDistance is None:
                     return 1
                 else:
                     return 0
 
-        if ghostPosition is not jailPosition:
+        if ghostPosition != jailPosition:
             if noisyDistance is None:
                 return 0
 
