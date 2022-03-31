@@ -679,8 +679,30 @@ class ParticleFilter(InferenceModule):
         self.particles for the list of particles.
         """
         self.particles = []
+
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        numberParticles = self.numParticles
+        numberLegalPos = len(self.legalPositions)
+
+        uniformParticles = numberParticles//numberLegalPos
+        randomParticles = numberParticles%numberLegalPos
+
+        #place uniform dots in each legal position
+        for legalPos in self.legalPositions:
+            for i in range(uniformParticles):
+                self.particles.append(legalPos)
+
+        #place random particles now
+
+        potentialPos = self.legalPositions
+        for i in range(randomParticles):
+            randomPos = random.choice(potentialPos)
+            self.particles.append(randomPos)
+            potentialPos.remove(randomPos)
+
+        #hopefully done:)
+
         "*** END YOUR CODE HERE ***"
 
     def getBeliefDistribution(self):
@@ -692,7 +714,24 @@ class ParticleFilter(InferenceModule):
         This function should return a normalized distribution.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        #hopefully their code calls initialize uniformply
+        listParticles = self.particles
+
+        countDict = {}
+        answerDict = {}
+
+        for pos in self.legalPositions:
+            countDict[pos] = 0
+
+        for particle in self.particles:
+            countDict[particle] = countDict[particle] + 1
+
+        totalNumParticles = len(self.particles)
+
+        for pos in self.legalPositions:
+            answerDict[pos] = countDict[pos]/totalNumParticles
+
+        return DiscreteDistribution(answerDict)
         "*** END YOUR CODE HERE ***"
     
     ########### ########### ###########
@@ -712,7 +751,15 @@ class ParticleFilter(InferenceModule):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        if self.getBeliefDistribution().total() == 0:
+            self.particles = self.initializeUniformly(gameState)
+        else:
+            #we need to update probability
+
+
+
+
         "*** END YOUR CODE HERE ***"
     
     ########### ########### ###########
